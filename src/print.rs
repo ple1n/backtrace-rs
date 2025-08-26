@@ -1,8 +1,11 @@
+use crossterm::style::Stylize;
+
 #[cfg(feature = "std")]
 use super::{BacktraceFrame, BacktraceSymbol};
 use super::{BytesOrWideString, Frame, SymbolName};
 use core::ffi::c_void;
-use core::fmt;
+use core::fmt::{self, Display};
+use std::fmt::format;
 
 const HEX_WIDTH: usize = 2 + 2 * core::mem::size_of::<usize>();
 
@@ -281,7 +284,8 @@ impl BacktraceFrameFmt<'_, '_, '_> {
         // Delegate to our internal callback to print the filename and then
         // print out the line number.
         (self.fmt.print_path)(self.fmt.fmt, file)?;
-        write!(self.fmt.fmt, ":{line}")?;
+
+        format!(":{line}").white().fmt(self.fmt.fmt)?;
 
         // Add column number, if available.
         if let Some(colno) = colno {

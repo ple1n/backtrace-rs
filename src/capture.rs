@@ -482,6 +482,8 @@ impl BacktraceSymbol {
     }
 }
 
+use crossterm::style::Stylize;
+
 impl fmt::Debug for Backtrace {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         let style = if fmt.alternate() {
@@ -505,7 +507,8 @@ impl fmt::Debug for Backtrace {
                         }
                     }
                 }
-                fmt::Display::fmt(&path.display(), fmt)
+
+                fmt::Display::fmt(&path.to_string_lossy().dark_red(), fmt)
             };
 
         let mut f = BacktraceFmt::new(fmt, style, &mut print_path);
